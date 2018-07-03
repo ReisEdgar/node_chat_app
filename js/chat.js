@@ -22,11 +22,17 @@ btn.addEventListener('click', function () {
     message.value = "";
 });
 
-submit.addEventListener('click', function () {
+submit.addEventListener('click', () =>{
     handle.disabled = true;
+  /*  var button = document.createElement("button");
+    button.innerText = handle.value;
+    button.addEventListener('click', () => {
+        socket.emit('private message request', handle.value);
 
-    users.innerHTML += '<p>' + handle.value + '</p>';
+    });
 
+       users.innerHTML += '<p + handle.value + '</button></p>';
+    */
 
     socket.emit('new_user', handle.value);
 
