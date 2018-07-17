@@ -31,9 +31,6 @@ router.get('/login', function (req, res) {
     res.render('login');
 });
 
-
-
-
 router.post('/', function (req, res, next) {
     // confirm that user typed same password twice
     if (req.body.password !== req.body.passwordConf) {
@@ -70,6 +67,12 @@ router.post('/', function (req, res, next) {
                 return next(err);
             } else {
                 req.session.userId = user._id;
+
+
+                console.log(req.session.userId );
+
+
+
                 return res.redirect('/home');
             }
         });
@@ -95,9 +98,25 @@ router.get('/logout', function (req, res, next) {
     }
 });
 
-router.get('/home', requiresLogin, function (req, res, next) {
-});
+router.get('/home', /*requiresLogin, */function (req, res, next) {
 
+   /* User.findById(req.session.userId)
+        .exec(function (error, user) {
+            if (error) {
+                return next(error);
+            } else {
+                if (user === null) {
+                    var err = new Error('Not authorized! Go back!');
+                    err.status = 400;
+                    return next(err);
+                } else {*/
+    return res.render('home');
+                /*}
+            }
+        });*/
+
+});
+/*
 function requiresLogin(req, res, next) {
     if (req.session && req.session.userId) {
         res.render('home');
@@ -106,8 +125,24 @@ function requiresLogin(req, res, next) {
         err.status = 401;
         return next(err);
     }
-}
+}*/
 
+var cookie_parser = require('cookie-parser');
+// set a cookie
+router.use(function (req, res, next) {
+    // check if client sent cookie
+    var cookie = req.cookies;
+    if (cookie === undefined) {
+
+        res.cookie('sessionID', req.session.userId, { maxAge: 900000, httpOnly: false });
+        console.log('cookie created successfully');
+    }
+    else {
+        // yes, cookie was already present 
+        console.log('cookie exists', cookie);
+    }
+    next(); // <-- important!
+});
 
 
 module.exports = router;
